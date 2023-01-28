@@ -2,4 +2,81 @@ DOCKER COURSE
 
 Multiple choice exams
 
+2013
+Docker used to use LXC
+
+2014
+but then docker introduced libcontainer
+
+
+OCI
+
+runtime-spec
+image-spec
+
+2016 things were broken down volumes images etc
+
+and runC emerged to run containers
+
+also containerd was introduced to manage the containers
+
+then containerd-shim was created so that containers would continue to run even if the docker daemon stopped. It is detached. 
+
+Docker manages 4 things
+
+images, networks, containers, Volumes
+
+INSTALL
+
+docker system info  
+
+
+docker daemon
+
+dockerd --debug (for debugging)
+
+
+when started it listens on rpc Unix Socket
+
+/var/run/docker.sock (only can access on localhost)
+
+
+we can open up the cli to outside by running the daemon like this
+
+dockerd --debug \
+        --hots=tcp://192.168.1.10:2375 (our host interface)
+        
+        
+on the other host you can access docker by setting a variable
+
+export DOCKER_HOST="tcp://192.168.1.10:2375"
+
+
+you can enable encryption
+
+dockerd --debug \
+        --host=tcp://192.168.1.10:2376 \
+        --tls=true
+        --tlscert=/var/docker/server.pem \
+        --tlskey=/var/docker/serverkey.pem
+        
+unencrypted 2375
+encrypted 2376
+
+you can move these settings to the docker daemon file
+
+/etc/docker/daemon.json
+
+{
+  "debug": true,
+  "hosts": ["tcp://192.168.1.10:2376"]
+  "tls": true,
+  "tlscert": "/var/docker/server.pem",
+  "tlskey": "/var/docker/serverkey.pem"
+}
+        
+
+
+
+
 
