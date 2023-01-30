@@ -74,7 +74,207 @@ you can move these settings to the docker daemon file
   "tlscert": "/var/docker/server.pem",
   "tlskey": "/var/docker/serverkey.pem"
 }
+
+docker container run -it ubuntu
+
+docker image build .
+
+docker container attach ubuntu
+
+docker container kill ubuntu
+
+docker container create httpd
+
+container id has a short form as well
+
+
+Stored in /var/lib/docker
+
+containers in here
+
+ls -lrt /var/lib/docker/containers/
+
+ls -lrt /var/lib/docker/containers/36a391532e10*
+
+Checkpoint hostconfig.json config.v2.json
+
+docker container ls
+
+docker container ls -a
+
+
+docker container ls -l
+
+docker container ls -q
+
+docker container ls -aq
+
+docker container start 36a391531e10
+
+docker container run httpd
+
+The ubuntu image runs then stops. What is the purpose of this?
+
+To build other images on top of it.
+
+docker container run -it ubuntu
+
+i=interactive t=terminal
+
+This will take us inside of the container
+
+always add options before the container image name
+
+to leave type exit
+
+
+WE can add our own name
+
+docker container run -itd --name=webapp ubuntu
+
+To rename:
+EX:
+docker container rename webapp custom-webapp
+
+By default container runs in attached mode
+
+
+-d to detach mode
+
+
+IF at some point later you want to re-attach to the container then run attach
+
+EX:
+
+docker container attach 11cb (use first digits of container id)
+
+How to get ID's of running containers?
+
+docker container ls -q
+
+
+What flags are used to configure encryption on docker daemon
+
+tlsverify, tlscert, tlskey
         
+CTRL+p+q
+
+puts container into detached mode
+
+to run a command inside of the detached container
+we can use exec
+
+docker container exec b342fdsfwere <command>
+
+or interactive again
+
+docker contatiner exec -it b32432efasdfa /bin/bash
+
+you can re-attach the container
+
+docker container attach b71f1adswwerr
+
+
+INSPECTING A CONTAINER
+
+docker container inspect b7adfdasd
+
+
+docker container stats (shows containers use of resources
+
+or
+
+docker container top <containername>
+
+
+docker container logs 
+
+docker system events --since 60m
+
+LINUX SIGNALS
+
+kill -SIGSTOP 13423
+
+if you don't know the id you can replace with the pgrep command
+
+kill -SIGSTOP $(pgrep htttpd)
+
+SIGSTOP pauses the process 
+
+to resume
+
+kill -SIGCONT $(pgrep httpd)
+
+to kill 
+
+kill -SIGTERM polite way of asking process to stop
+
+-SIGKILL is a force
+
+
+each signal has a number as well
+
+so
+
+kill-9 
+
+
+docker container pause
+
+unpause
+
+stop
+
+docker uses freezer cgroup so that for certain containers will be paused or stops, i.e. they can't ignore like linux processes sometimes do.
+
+You can kill processes inside the container by using the 
+
+docker container kill --signal=9 web
+
+REMOVE CONTAINER
+
+stop container, then remove
+
+
+docker container ls -q (lists only container id)
+
+so you can add to commands
+
+docker container stop $(docker container ls -q)
+
+docker containter rm $(docker container ls -aq) use the a to show all containers even stopped ones
+
+docker container prune (removes all stopped containers)
+
+REMOVE FLAG
+
+if we want the container to remove itself as soon as it has finihed its task
+
+docker container run --rm ubuntu expr 4 + 5
+
+docker container ls -l
+
+
+/etc/lsb-release
+
+docker container inspect
+
+docker container top 52cweewrqer
+
+docker container logs 25234324
+
+docker container logs -f (shows realtime logs)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
