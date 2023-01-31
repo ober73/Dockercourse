@@ -265,7 +265,116 @@ docker container logs 25234324
 
 docker container logs -f (shows realtime logs)
 
+hostname is normally the beginning of the containerID
 
+or set it
+
+docker container run -it --name=webapp --hostname=webapp ubuntu
+
+RESTART POLICY
+
+if job completed then container will stop
+
+docker container run ubuntu expr 3 + 5
+
+Exited (0) code 0
+
+or error (1) code 1
+
+EX:
+
+docker container run ubuntu expr three + 5
+
+docker container run --restart= (this will auto restart
+
+by default no
+
+other settings on-failure, always, unless stopped
+
+if you want your containers to continue working even if the docker daemon stops you can change the daemon properties
+
+/etc/docker/daemon.json
+
+{ 
+  "debug": true,
+  "host": ["tcp://192.168.1.10:2376"],
+  "live-restore": true
+}
+
+
+COPYING FILES
+
+docker container cp /tmp/web.conf webapp:/etc/web.conf 
+
+SRC_PATH DEST_PATH
+
+to copy container to host do opposite
+
+PUBLISHING PORTS
+
+docker run -p 80:5000 kodekloud/simple-webapp
+
+all traffic on host at port 80 will get routed to port 5000 on the container
+
+
+if you run the docker port mapping by default it is accesible on all the host interfaces
+
+To limit that we specify the IP address with the port option:
+
+docker run -p 192.168.1.5:8000:5000 kodekloud/simple-webapp
+
+or you can do this
+
+docker run -p 5000 kodekloud/simple-webapp 
+this will publish to a random port on the host
+
+it will be in the ephemeral port range => 32768 - 60999
+
+cat /proc/sys/net/ipv4/ip_local_port_range
+32768 60999
+
+
+or run
+
+docker run -P kodekloud/simple-webapp
+
+Dockerfile
+
+FROM ubuntu:16.04
+RUN apt-get update && apt-get install -y python python-pip
+RUN pip install flask
+COPY app.py /opt/
+ENTRYPOINT flask run
+EXPOSE 5000
+
+in the above case wi -P it will expose the pod on port 5000 in the dockerfile
+
+you can expose additional ports on top of those in the dockerfile by using the --expose arg
+
+docker run -P --expose=8000 kodekloud/simple-webapp
+
+docker inspect kodekloud/simple-webapp
+
+"ExposedPorts": {
+   "5000/tcp": {},
+   "8080/tcp": {}
+},
+
+docker relies on the kernel's IP Tables
+
+DOCKER creates its own chain
+
+DOCKER-USER DOCKER
+
+iptables -t nat -S DOCKER
+
+
+--rm (lookup why you would use this when creating a container)
+
+
+docker system events --since 60m
+
+docker container update --restart always httpd
 
 
 
