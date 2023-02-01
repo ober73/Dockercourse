@@ -376,6 +376,65 @@ docker system events --since 60m
 
 docker container update --restart always httpd
 
+DOCKER DAEMON TROUBLESHOOTING
+
+docker host env variable
+
+export DOCKER_HOST="tcp://192.168.1.10:2375"
+
+2376 for encrypted traffic
+
+journalctl -u docker.service
+
+check config file
+
+/etc/docker/daemon.json
+
+df -h check space
+
+docker container prune
+
+docker image prune
+
+docker system info
+
+DEBUG MODE
+
+turn on debug mode in the daemon.json file
+
+{
+  "debug": true
+}
+
+
+tail -50 /var/log/messages
+
+
+you can also do
+
+kill -SIGHUP 3664
+
+
+LOGGING DRIVERS
+
+docker logs nginx
+
+all info for containers is stored under /var/lib/docker/containers
+
+stored in json format
+
+docker system info
+
+shows where log plugins are
+
+also you can manually set
+
+docker run -d --log-driver json-file nginx
+
+then check with docker container inspect nginx
+
+
+
 
 
 
