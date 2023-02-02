@@ -433,6 +433,100 @@ docker run -d --log-driver json-file nginx
 
 then check with docker container inspect nginx
 
+IMAGE REGISTRY
+
+dockerhub
+
+on prem docker registry services
+
+docker image ls
+
+
+docker search httpd
+
+--limit 2
+
+--filter stars=10
+
+is-official
+
+docker image pull (only pulls down)
+
+IMAGE ADDRESSING CONVENTION
+
+image: httpd/httpd (first part is user account, second is image repository)
+
+if not specified images pullsed from docker.io registry
+
+so 
+
+image: docker.io/httpd/httpd
+
+
+AUTHENTICATING FROM REGISTRIES
+
+for private registries or your own
+
+docker login docker.io
+
+docker login gcr.io
+
+you can then push your images to a registry
+
+docker image push httpd
+
+create your own copy?
+
+you can retag an image
+
+docker image tag httpd:alpine httpd:customv1
+
+
+docker system df (will show actual size)
+
+REMOVE IMAGES
+
+docker rm (but containers must be stopped)
+
+docker image prune -a (delete all images not being used)
+
+
+INSPECT IMAGE
+
+docker image history ubuntu (will show all the commands to create the layers)
+
+
+docker image inspect shows all info about image
+
+
+output in json
+
+you can use jsonpath
+
+docker image inspect httpd -f '{{.Os}}'
+
+-f '{{.Architecture}}' {{.Os}}'
+
+
+IMAGE SAVE AND LOAD
+
+for air gapped for example
+
+docker image save alpine:latest -o alpine.tar
+
+then in new location use the 
+
+docker image load -i alpine.tar
+
+You can also import and export containers
+
+docker export <container-name> > testcontainter.tar
+
+
+
+
+
+
 
 
 
