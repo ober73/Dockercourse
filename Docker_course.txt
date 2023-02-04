@@ -522,6 +522,135 @@ You can also import and export containers
 
 docker export <container-name> > testcontainter.tar
 
+CREATE YOUR OWN IMAGE
+
+1. OS Ubuntu
+
+2. Update apt repo
+
+3. Install dependencies using apt
+
+4. Install Python dependencies using pip
+
+5. Copy source code to /opt folder
+
+6. Run the web server using "flask" command
+
+
+Dockerfile
+
+FROM Ubuntu
+
+RUN apt-get update && apt-get -y install python
+
+RUN pip install flask flask-mysql
+
+COPY . /opt/source-code
+
+ENTRYPOINT FLASK_APP=/opt/source-code/app.py flask run
+
+docker build . -f Dockerfile -t mmumshad/my-custom-app
+
+docker push mmumshad/my-custom-app
+
+you can see the size of the layers if you run the docker history command followed by the image name
+
+All the layers are cached so if one layer fails and you need to rerun another then it gets it from the cache
+
+Dockerfile
+
+FROM centos:7
+RUN yum -y update
+RUN yum -y install httpd
+COPY ./index.html /var/www/html/index.html
+EXPOSE 80
+CMD ["httpd", "-D", "FORGEGROUND"]
+
+
+
+you can also use ARG to set a variable
+
+EX: ARG tomcat_version=8.5.6
+
+Also to change the path in a container and make it the current working directory us
+
+WORKDIR /
+
+follow build command with a .
+
+docker image build -t yogeshraheja/tomcatone:v1 .
+
+after container built you can run the container like this
+
+docker container run -itd --name=imagetesting -p 84:8080 yogeshraheja/tomcatone:v1
+
+to use a different version we can run
+
+docker image build -t yogeshraheja/tomcatone:v2 --build-arg tomcat_version=8.5.8 .
+
+
+to customize a running container
+
+docker container commit -a "Ravi" httpd customhttpd
+
+not a reccomend approach, only one off or debug 
+
+BUILD CONTEXT
+
+. is the path
+
+it boucl be /opt/ or anything
+
+EX:
+
+docker build /opt/my-custom-app
+
+docker build .
+
+
+all the files at this location are transferred to /var/lib/docker/tmp/docker-builderxxxxxx
+
+only store the necessary files in the build context otherwise it increases the amount that is sent over.
+
+you can use a .dockerignore file to ignore
+
+you can also point to a url
+
+docker build https://github/acd/myappp
+
+
+docker build -f Dockerfile.dev https....
+
+
+BUILD CACHE
+
+
+if one layer is modified, i.e. a new package is added then all of the other layers are invalidated in the cache and need to be retrieved again
+
+best practice combine apt-get update && apt-get isntall 
+
+so that you get new packages
+
+cache busting and version pinning
+
+Optimize instruction to use cache
+
+base not often changing stuff put first.
+
+COPY VS ADD
+
+ADD has more features
+
+best practice
+
+use COPY when you can
+
+ADD is more differently so not as clear
+
+add creates more layers which means bigger images
+
+
+
 
 
 
