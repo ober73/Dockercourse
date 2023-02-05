@@ -649,6 +649,162 @@ ADD is more differently so not as clear
 
 add creates more layers which means bigger images
 
+CMD vs ENTRYPOINT
+
+CMD ["bash"]
+
+you can append a command to the run command
+
+docker run ubuntu sleep 5
+
+you could create a new command and add it in the Dockerfile
+
+FROM Ubuntu
+
+CMD sleep 5
+
+CMD command param1
+
+CMD ["command", "param1"]
+
+docker build -t ubuntu-sleeper .
+
+you can use ENTRYPOINT in the Dockerfile and this will take parameters when run
+
+FROM UBUNTU
+
+ENTRYPOINT["sleep"]
+
+docker run ubuntu-sleeper 10 (the 10 is added on to the sleep command)
+
+
+If you want a default value for the command if the user does not provide an overide then put it in the dockefile
+
+FROM Ubuntu
+
+ENTRYPOINT ["sleep"]
+
+CMD ["5"]
+
+if you want to overide the command itself at startup then you can run the with entryppoint
+
+EX:
+
+docker run --entrypoint sleep2.0 ubuntu-sleeper 10
+
+
+BASE vs PARENT IMAGE
+
+
+when build from scratch it is the base image
+
+there can be mulitple parent image
+
+there is nothing inside a scratch image
+
+EX:
+
+debian:buster-slim (Dockerfile)
+
+FROM scratch
+ADD rootfs.tar.xz /
+CMD ["bash"]
+
+MULTISTAGE BUILDS
+
+it is best to build your applications in Docker itself
+
+EX:
+
+Dockerfile.builder
+
+FROM node
+COPY ..
+RUN npm install
+RUN npm run build
+
+docker build -t builder .
+
+then Containerize it for production
+
+EX:
+
+Dockerfile
+
+FROM nginx
+
+COPY dist /usr/share/nginx/html
+
+CMD ["nginx"], "-g", ["daemon off;"]
+
+docker build -t my-app .
+
+BUT 
+
+we need a way to get the data into /usr/share/nginx/html where the Dockerfile is expecting it.
+
+
+So Dockerfile.builder built an image but we only want the dist directory that was created in that image so that we can use it in the main Dockerfile
+
+To get that we write a script:
+
+copy-dist-from-builder.sh
+
+docker container create --name builder builder
+docker container cp builder:dist ./dist
+docker container rm -f builder
+
+Multi-stage builds allow us to combine these 3 stages into 1
+
+EX:
+
+Dockerfile
+
+FROM node
+
+COPY ..
+RUN npm install
+RUN npm run build
+
+FROM nginx
+
+COPY --from=0 dist /usr/share/nginx/html
+
+CMD [ "nginx", "-g", "daemon off;" ]
+
+
+so we have multiple FROM statements
+
+
+or you can name the first stage like this
+
+FROM node AS builder
+
+below under the second FROM
+
+COPY --from=builder
+
+
+if you want to build a specific stage then you can do as follows:
+
+docker build --target builder -t my-app .
+
+BEST PRACTICES build
+
+don't combine multiple applications in one container
+
+build modular images
+
+don't store data in containers
+
+store on external volumes or in a caching service like Redis
+
+keep images slim
+
+only minimal
+
+
+
 
 
 
