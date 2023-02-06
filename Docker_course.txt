@@ -803,6 +803,92 @@ keep images slim
 
 only minimal
 
+DOCKER SECURITY
+
+Secure Docker Server
+
+tls encryption 2376 port
+
+add to docker/ daemon.json file
+
+{ 
+ "hosts": ["tcp://192.168.1.10:2376"]
+ 
+ "tls": true,
+ "tlscert": "/var/docker/server.pem",
+ "tlskey": "/var/docker/serverkey.pem"
+ "tlsverify": true,
+ "tlscacert": "/var/docker/caserver.pem"
+ }
+ 
+ someone can now connect to this host from outside by setting the env variable
+ 
+ export DOCKER_HOST="tcp://192.168.1.10:2376"
+ 
+ export DOCKER_TLS=true
+ 
+ on client side
+ 
+ docker --tlscert=<> --tlskey=<> --tlscacert=<> ps
+ 
+or drop the certs in the user ~/.docker folder where docker will automatically pick them up
+
+NAMESPACES PID
+
+processes on the host are run all in their own namespaces
+
+you can set the user in the Docker image to non root
+
+FROM Ubuntu
+
+USER 1000
+
+full list of linux capabilities can be found here
+/usr/include/linux/capability.h
+
+docker run --cap-add
+
+or --cap-drop to remove capabilities
+
+or for full privileges
+
+docker run --privileged ubuntu
+
+RESOURCE CONSUMPTION
+
+by default no restrictions
+
+sharing cpu on host
+
+CFS Completely Fair Scheduler in linux
+
+docker container run --cpu-shares=512 webapp4
+
+you can limit certain containers to certain cpus
+
+docker container run --cpuset-cpus=0-1 webapp1
+
+now a newer option is to set counts
+
+docker container run --cpus=2.5 webapp4
+
+you can also use the docker container update --cpus=0.5 webapp4
+
+MEMORY LINUX
+
+docker container run --memory=512m webapp
+
+if container tries to use more then it is killed
+
+OOM (Out of Memory)
+
+docker container run --memory=512 --memory-swap=512m webapp
+
+
+ 
+ 
+ 
+
 
 
 
