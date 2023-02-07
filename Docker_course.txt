@@ -884,6 +884,97 @@ OOM (Out of Memory)
 
 docker container run --memory=512 --memory-swap=512m webapp
 
+DOCKER NETWORKING
+
+when you install docker it creates 3 networks automatically
+
+Bridge none host
+
+to specify
+
+docker run ubuntu (by default will be bridge)
+docker run Ubuntu --network=none
+docker run Ubuntu --network=host
+
+
+Bridge is the internal docker network normally
+ip 172.17.0.x
+
+to access from the outside you need to map to the outside
+
+
+for host network it is directly connected to the outside
+
+you can only use one port when using host per app
+
+so 5000 used once means it is unavailable
+
+
+You can create another network as well
+
+docker network create \
+  --driver bridge \
+  --subnet 182.18.0.0/16
+  custom-isolated-network
+  
+  
+  docker network ls
+  
+Embedded DNS
+
+docker has a buildin DNS server
+
+the builtin dns server runs at 127.0.0.11
+
+docker uses docker namespaces
+
+docker network connect custom-net my-container
+
+
+docker network disconnect custom-net my-container
+
+docker network rm custom-net
+
+docker network prune
+
+EMBEDDED DNS won't work with the default bridge network
+
+
+create a new network 
+
+EX:
+
+docker network create --driver=bridge --subnet=192.168.10.0/24 kodekloudnet
+
+docker network ls
+
+docker network inspect kodekloudnet
+
+Then create a container
+
+EX:
+docker container run -itd --name=customfirst --net=kodekloudnet centos: 7
+
+Userdefined networks have embedded DNS enabled
+
+
+TO Connect a container to a network use
+EX:
+docker network connect kodekloudnet first
+
+you can also use 
+
+docker network disconnect 
+
+
+you can't remove a network if you have containers attached to it.
+
+to stop all containers
+
+docker container stop $(docker container ls -q)
+
+docker container rm $(docker container ls -aq)
+
 
  
  
