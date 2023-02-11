@@ -976,6 +976,130 @@ docker container stop $(docker container ls -q)
 docker container rm $(docker container ls -aq)
 
 
+
+LINUX NAMESPACES
+
+process runs inside the container with one pid
+
+but in the host with a different pid
+
+
+To create new network namespaces run the
+
+ip netns add red
+
+ip netns add blue
+
+to list the namespaces run the ip netns command
+
+ip link
+
+to see the same information in a namespace run the ip netns exec red ip link
+
+or run with -n
+
+ip -n red link
+
+if you run arp on the host you see entries
+
+but not when you run inside ns
+
+ip netns exec red arp
+
+TO CONNECT TWO NAMESPACES RUN:
+
+ip link add veth-red type veth peer name veth-blue
+
+then set to the appropriate ns
+
+ip link set veth-red netns red
+
+then assign IPs
+
+ip -n red addr add 192.168.15.1 dev veth-red
+
+ip -n red link set veth-red up
+
+IF YOU HAVE MULTIPLE NETWORKS THEN YOU NEED TO CREATE A BRIDGE
+
+a few solutions but most popular
+
+LINUX BRIDGE OvS
+Open vSwtich
+
+ip link add v-net-0 type bridge
+
+ip link set dev v-net-0 up
+
+THen you can delete the original links, only need to delete one side
+
+ip -n red link del veth-red
+
+NOW CONNECT TO THE SWITCH
+
+ip link add veth-red type veth peer name veth-red-br
+
+ip link set veth-red netns red
+
+ip link set veth-red-br master v-net-0
+
+Connect bridge to host
+
+ip addr add 192.168.15.5/24 dev v-net-0
+
+add route so blue can get to outside
+
+ip netns exec blue ip route add 192.168.1.0/24 via 192.168.15.5
+
+for communication we need to add NAT we do this with IPTABLES
+
+iptables -t nat -A POSTROUTING -s 192.168.15.0/24 -j MASQUERADE
+
+For access from the outside inside we use portforwarding
+
+iptables -t nat -A PREROUTING --dport 80 --to-destination 192.168.15.2:80 -j DNAT
+
+DOCKER NETWORKING
+
+none
+
+host
+
+bridge
+
+
+docker run nginx (default bridge)
+
+
+docker creates a network
+
+docker network ls
+
+bridge
+
+on the host it is docker0
+
+ip link command will show that
+
+ip netns
+
+Interfaces on the bridge are odd
+
+on the containers the they are even
+
+EX:
+
+container eth0@if12----------------bridge@if11
+
+docker run -p 8080:80 nginx
+
+to see the rules that docker creates use:
+
+iptables -nvL -t nat
+
+
+
+
  
  
  
