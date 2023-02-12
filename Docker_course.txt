@@ -1098,6 +1098,44 @@ to see the rules that docker creates use:
 iptables -nvL -t nat
 
 
+STORAGE
+
+Storage drivers and volume drivers
+
+
+docker volume inspect data_volume
+
+docker container run --mount \
+source=data_vol1,destination=/var/www/html/index.html,readonly httpd
+
+docker volume ls
+
+T
+docker volume create testvol
+
+docker container run -itd --name=test -v testvol:/yogesh centos:7
+
+BY default volumes are created in rw mode
+
+but you can mount read-only if you want
+
+
+docker container stop $(docker container ls -q)
+
+docker container rm $(docker container ls -aq)
+
+docker volume prune
+
+
+TO MOUNT on the host use bind
+
+docker container run -itd --mount type=bind,source=/data,destination=/yogesh conetos:7
+
+In the bind method we won't be able to see a list of volumes
+
+
+
+
 
 
  
