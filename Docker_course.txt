@@ -1289,6 +1289,31 @@ docker-compose ps
 docker-compose down
 
 
+DOCKER SWARM
+
+Manager node and worker nodes
+
+docker-compose files are used
+
+
+docker system info
+
+...
+
+Swarm: inactive or active
+
+docker swarm init
+
+docker swarm join --token
+
+docker node ls
+
+if you lose the token you can regenerate again
+
+docker node inspect
+
+
+
 
 
  
