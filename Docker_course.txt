@@ -1313,6 +1313,12 @@ if you lose the token you can regenerate again
 docker node inspect
 
 
+DOCKER ENTERPRISE
+
+supports both docker swarm and kubernetes on the same cluster
+
+
+
 
 
 
